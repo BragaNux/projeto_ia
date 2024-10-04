@@ -41,3 +41,5 @@ A IA foi treinada para responder como um farmacêutico profissional, capaz de fo
 - Python 3.12+
 - Pipenv ou Virtualenv para gerenciamento de dependências
 - Requisitos do sistema para MoviePy e FFmpeg para processamento de vídeo
+
+### Segue link do video mostrando a funcionalidade: https://www.youtube.com/watch?v=d2udt0eYibA
