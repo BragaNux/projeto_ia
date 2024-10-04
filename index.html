@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface de IA - Flask</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .form-section {
+            background-color: white;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            width: 45%;
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        label {
+            font-weight: bold;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #audioResult, #imageResult, #textResult, #videoResult {
+            margin-top: 20px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Interface de IA</h1>
+
+    <div class="container">
+        <!-- Transcrição de Áudio -->
+        <div class="form-section">
+            <h2>Transcrição de Áudio</h2>
+            <form id="audioForm" enctype="multipart/form-data">
+                <label for="file">Escolha um arquivo de áudio:</label><br>
+                <input type="file" id="file" name="file"><br><br>
+                <button type="submit">Transcrever Áudio</button>
+            </form>
+            <div id="audioResult"></div>
+        </div>
+
+        <!-- Descrição de Imagem -->
+        <div class="form-section">
+            <h2>Descrição de Imagem</h2>
+            <form id="imageForm" enctype="multipart/form-data">
+                <label for="image">Escolha uma imagem:</label><br>
+                <input type="file" id="image" name="image"><br><br>
+                <button type="submit">Descrever Imagem</button>
+            </form>
+            <div id="imageResult"></div>
+        </div>
+
+        <!-- Geração de Texto com Ollama -->
+        <div class="form-section">
+            <h2>Geração de Texto com Ollama</h2>
+            <form id="textForm">
+                <label for="prompt">Digite o prompt:</label><br>
+                <input type="text" id="prompt" name="prompt"><br><br>
+                <button type="submit">Gerar Texto</button>
+            </form>
+            <div id="textResult"></div>
+        </div>
+
+        <!-- Processamento de Vídeo -->
+        <div class="form-section">
+            <h2>Processamento de Vídeo</h2>
+            <form id="videoForm" enctype="multipart/form-data">
+                <label for="video">Escolha um vídeo:</label><br>
+                <input type="file" id="video" name="video"><br><br>
+                <button type="submit">Processar Vídeo</button>
+            </form>
+            <div id="videoResult"></div>
+        </div>
+    </div>
+
+    <script>
+        // AJAX para enviar o formulário de áudio
+        document.getElementById('audioForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch('/transcribe_audio', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('audioResult').innerText = data.transcription || data.error;
+            });
+        });
+
+        // AJAX para enviar o formulário de imagem
+        document.getElementById('imageForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch('/describe_image', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('imageResult').innerText = `${data.description} - Similaridade: ${data.similarity}`;
+            });
+        });
+
+        // AJAX para enviar o formulário de texto
+        document.getElementById('textForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch('/generate_text', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('textResult').innerText = data.response || data.error;
+            });
+        });
+
+        // AJAX para enviar o formulário de vídeo
+        document.getElementById('videoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch('/process_video', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('videoResult').innerText = data.description || data.error;
+            });
+        });
+    </script>
+
+</body>
+</html>
